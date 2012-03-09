@@ -1,0 +1,239 @@
+
+                              GRED Version 3.80
+                       (C) Copyright 2001, Mike Wiering
+
+                          E-mail: mike.wiering@wxs.nl
+                 Homepage: http://home.wxs.nl/~mike.wiering
+
+
+INTRODUCTION
+
+  GRED is a sprite editor for game programmers. It has succesfully been used
+  for several games so far, including CHARLIE THE DUCK, SUPER ANGELO and SINT
+  NICOLAAS. Because GRED was initially intended for personal use only, don't
+  expect too much from the user interface and help-screens!
+
+  In GRED you can edit graphics pixel by pixel with the keyboard (mouse works
+  too, but still a little buggy). Sprites can be saved in several formats,
+  that can easily be included in your Pascal, C or Assembly source.
+
+  GRED can be used to make animation sequences: give your sprites the
+  extensions .000, .001, etc. and you can go to the next and the previous
+  with <Ctrl-PgUp> and <Ctrl-PgDn>.
+
+
+COMMAND LINE
+
+  The command line syntax for GRED is:
+
+      GRED [filename] [-w:width] [-h:height]
+
+  Filename is the name of the file you want to edit, this may be a new file.
+  Width and Height are the dimensions of the sprite.
+
+
+PALETTE
+
+  Whenever you start GRED, it looks for the file DEFAULT.PAL in the current
+  directory. If this file does not exist, GRED will use the standard VGA 256-
+  color palette.
+
+
+KEYS
+
+  IMAGE WINDOW
+
+    Cursor movement
+
+      arrow keys           move cursor left/right/up/down
+      Home/PgUp/End/PgDn   move cursor diagonally
+      Ctrl-Home            go to top-left corner
+      Ctrl-End             go to bottom-right corner
+
+    Files
+
+      Shift-F2             new (clear image)
+      F3                   load a file at cursor postion
+      Alt-F3               load a file (color 0 = transparent)
+      Ctrl-F3              load a file and add pixel values to current image
+      F4                   save file and Pascal include file .$?? (4-planes
+                           format)
+      Shift-F4             save file and C include file .$?? (4-planes
+                           format)
+      Ctrl-F4              save file and Pascal include file .$??
+                           (linear format)
+      Ctrl-PgUp            save and load next animation frame (only files
+                           with extension .000, .001 etc. - Pascal, linear)
+      Ctrl-PgDn            save and load previous animation frame
+      Alt-X                save (binary only) and quit
+      Shift-F9             load palette
+      Shift-F10            save palette (save as DEFAULT.PAL to load
+                           automatically next time)
+
+    Editing
+
+      X                    draw a pixel (forground color)
+      Space                draw a pixel (background color)
+      F2                   undo (works only with some functions)
+      Alt-H                change horizontal size of your image
+      Alt-V                change vertical size of your image
+      Tab                  select a color from the palette (see palette
+                           window keys below)
+      Ctrl-H/V             horizontal/vertical line
+      Ins, H/V             insert horizontal/vertical line
+      Del, H/V             Delete horizontal/vertical line
+      Ctrl-U/D/L/R         move entire image up/down/left/right
+      F                    flood fill
+      Alt-F1               rotate image 90 degrees (hor/vert size must be
+                           the same)
+      C                    pick a color from the image at cursor position
+      Alt-C                change color at cursor position in entire image
+      Shift-Tab            change color group (row of 8 colors) to selected
+                           color group in entire image
+
+    Block functions
+
+      Shift-F1             horizontal mirror
+      Ctrl-F1              vertical mirror
+      F5                   set block start (cursor position is end of block)
+      Shift-F5             fill block
+      Alt-F5               fill block with random pixels
+      Ctrl-F5              rectangle
+      Shift-F6             smooth area
+      Alt-F6               random 1 (add noise)
+      Ctrl-F6              random 2 (add noise)
+      F7                   increment block (lighter)
+      Shift-F7             decrement block (darker)
+      Alt-F7               circle
+      Ctrl-F7              add noise
+      Shift-F8             smooth area (little), use only selected colors
+      Alt-F8               smooth area (more), use only selected colors
+      Alt-F9               expanding filled circle (light in center, dark
+        (several times)    at edges), press Shift to not overwrite higher
+                           values of the same color group
+      Alt-F10              expanding filled circle (dark in center, light
+                           at edges)
+
+    Screen size
+
+      Alt-0                full screen, actual size
+      Alt-1..Alt-9         set block size (1x1 pixels .. 9x9 pixels)
+      Alt--                show pattern
+
+    Quitting
+
+      Esc                  quit without saving
+      Alt-X                save and quit
+
+    Other functions
+
+      F1                   help
+      F8                   scale image (first press F5 at bottom-right
+                           corner of original image, then move to new
+                           bottom-right corner and press F8)
+      Ctrl-F8              scale image (same as F8, but only selected
+                           color groups are used)
+
+
+  PALETTE WINDOW
+
+    Selecting a color
+
+      cursor keys          move cursor, select forground color
+      Space                select background color
+      Tab, Enter           return to the image window
+      Esc                  cancel
+
+    Changing palette RGB values
+
+      Shift-Home/Up/PgUp   increment Red/Green/Blue palette value
+         or r/g/b
+      Shift-End/Down/PgDn  decrement Red/Green/Blue palette value
+         or R/G/B
+      Del                  copy a row of 8 colors
+      Ins                  paste a row of 8 colors
+      *                    make a smooth row of colors between the
+                           background color and the selected color
+
+    Including/excluding rows colors (for resize etc.)
+
+      F1                   unselect all colors
+      F3                   unselect current row
+      F4                   select current row
+      F5                   toggle select current row
+
+
+USING THE MOUSE
+
+  In GRED, you can draw with the left button and pick a color (from anywhere
+  in your drawing) with the right button. In the palette area, the left button
+  selects the forground color and the right button selects the background
+  color.
+  When you press Left Shift, the left button makes pixels lighter and the
+  right button makes pixels darker.
+  Use Right Shift to smoothen your image with the mouse.
+
+
+FILE FORMAT
+
+  GRED uses it's own file format, that looks like this:
+
+     Offset:   Size:            Description:
+    ----------------------------------------------
+        0000                2   Width
+        0002                2   Height
+        0004   Width * Height   Image (linear)
+
+  The palette is stored in a 768 byte file (256 times RGB value between 0
+  and 63).
+
+  In GRED, the color zero is normally used for transparant. Use groups of
+  8 or 16 shades (dark to light) of each color.
+
+
+USING YOUR GRAPHICS WITH TURBO PASCAL
+
+  To load a sprite into a Turbo Pascal program, save it with <Ctrl-F4>.
+  If your filename was SPRITE.000, two files are saved: SPRITE.000 and
+  SPRITE.$00. The first is a binary file containing your sprite, the
+  second looks something like this:
+
+     procedure SPRITE000; assembler;
+     asm
+       db   0,  0,  0, 87, 87, 87, 87, 87, 87,  0, 87, 84, 84, 83, 83
+       db  83, 83, 83, 82,  0, 87, 84, 84, 84, 83, 83,  0, 83, 83,  0
+       db  87, 83
+     end;
+
+  Now you can include this file into your Pascal code, like this:
+
+     {$I SPRITE.$00}
+     ....
+     procedure DrawSprite (X, Y, Width, Height: Integer; var Sprite);
+     ....
+     DrawSprite (10, 10, 4, 8, @SPRITE000^);
+
+
+NOTE
+
+  There is also a more advanced application for creating graphics for tile
+  based games: Tile Studio. It run under Windows and is freely available on
+  the Internet: http://www.cs.kun.nl/is/ts/.
+
+
+DISCLAIMER
+
+  THIS PROGRAM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+  EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS
+  TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE
+  PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
+  REPAIR OR CORRECTION.
+
+  IN NO EVENT WILL THE AUTHOR, DISTRIBUTOR OR ANY OTHER PARTY BE LIABLE TO
+  YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR
+  CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE, MISUSE OR INABILITY TO USE
+  THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR LOSSES SUSTAINED
+  BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY
+  OTHER PROGRAMS), EVEN IF SUCH PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+  SUCH DAMAGES.
